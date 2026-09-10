@@ -1,0 +1,17 @@
+game_id,title,released,genres,platforms,metacritic,image_url,gameplay,story,graphics,sound,replayability
+3328,The Witcher 3: Wild Hunt,2015-05-18,"Action, RPG","PC, PlayStation 4, Xbox One, Nintendo Switch, PlayStation 5, Xbox Series S/X",92.0,https://media.rawg.io/media/games/618/618c2031a07bbff6b4f611f10b6bcdbc.jpg,9,10,9,10,7
+3498,Grand Theft Auto V,2013-09-17,"Action, Adventure","PC, PlayStation 5, Xbox Series S/X, PlayStation 4, PlayStation 3, Xbox 360, Xbox One",92.0,https://media.rawg.io/media/games/20a/20aa03a10cda45239fe22d035c0ebe64.jpg,8,8,8,9,8
+4200,Portal 2,2011-04-18,"Shooter, Puzzle","PlayStation 3, PC, Xbox 360, Linux, macOS",95.0,https://media.rawg.io/media/games/2ba/2bac0e87cf45e5b508f227d281c9252a.jpg,10,9,7,8,6
+28,Red Dead Redemption 2,2018-10-26,"Action, Adventure","PC, PlayStation 4, Xbox One",96.0,https://media.rawg.io/media/games/511/5118aff5091cb3efec399c808f8c598f.jpg,8,10,10,10,6
+5679,The Elder Scrolls V: Skyrim,2011-11-11,"Action, RPG","PC, Nintendo Switch, PlayStation 3, Xbox 360",94.0,https://media.rawg.io/media/games/7cf/7cfc9220b401b7a300e409e539c9afd5.jpg,8,7,7,9,9
+4459,Grand Theft Auto IV,2008-04-29,"Action, Adventure","PC, Xbox 360, PlayStation 3",95.0,https://media.rawg.io/media/games/4a0/4a0a1316102366260e6f38fd2a9cfdce.jpg,7,8,6,8,6
+19487,Ori and the Blind Forest,2015-03-11,"Adventure, Platformer","PC, Xbox One, Nintendo Switch",88.0,https://media.rawg.io/media/games/f8c/f8c6a262ead4c16b47e1219310210eb3.jpg,8,7,10,10,5
+3253,Don't Starve,2013-04-23,"Adventure, Indie","PC, Xbox One, PlayStation 4, iOS, Android, Linux, macOS, Nintendo Switch",79.0,https://media.rawg.io/media/games/f3e/f3eec35c6218dcfd93a537751e6bfa61.jpg,7,4,8,7,8
+654,Stardew Valley,2016-02-25,"Indie, RPG, Simulation","PC, iOS, Android, Nintendo Switch, PlayStation 4, Xbox One, PS Vita, Linux, macOS",89.0,https://media.rawg.io/media/games/713/713269608dc8f2f40f5a670a14b2de94.jpg,9,6,7,8,10
+2454,DOOM (2016),2016-05-13,"Action, Shooter","PC, PlayStation 4, Xbox One, Nintendo Switch",85.0,https://media.rawg.io/media/games/587/587588c64afbff80e6f444eb2e46f9da.jpg,9,4,8,10,7
+274755,Hades,2020-09-17,"Action, RPG, Indie","PC, Xbox Series S/X, PlayStation 5, PlayStation 4, Xbox One, Nintendo Switch, macOS",93.0,https://media.rawg.io/media/games/1f4/1f47a270b8f241e4676b14d39ec620f7.jpg,10,8,9,9,10
+22509,Minecraft,2011-11-18,"Action, Adventure, Simulation","PC, PlayStation 4, Xbox One, Nintendo Switch, iOS, Android, Linux, macOS",83.0,https://media.rawg.io/media/games/b4e/b4e4c73d5aa4ec66bbf75375c4847a2b.jpg,8,2,5,6,10
+41494,Cyberpunk 2077,2020-12-10,"Action, RPG","PC, PlayStation 5, Xbox Series S/X, PlayStation 4, Xbox One",86.0,https://media.rawg.io/media/games/26d/26d4437715bee60138dab4a7c8c59c92.jpg,7,8,9,9,5
+326243,Elden Ring,2022-02-25,"Action, RPG","PC, PlayStation 5, Xbox Series S/X, PlayStation 4, Xbox One",96.0,https://media.rawg.io/media/games/5ec/5ecac5cb026ec26a56efcc546364e348.jpg,9,6,9,8,8
+11973,Prey (2017),2017-05-05,"Action, Shooter","PC, PlayStation 4, Xbox One",79.0,https://media.rawg.io/media/games/e6d/e6de699bd788497f4b52e2f41f9698f2.jpg,8,7,7,8,5
+9767,Hollow Knight,2017-02-23,"Platformer, Indie, Action","PC, Xbox One, PlayStation 4, Nintendo Switch, macOS, Linux",88.0,https://media.rawg.io/media/games/4cf/4cfc6b7f1850590a4634b08bfab308ab.jpg,10,8,9,10,8
