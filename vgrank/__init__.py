@@ -8,7 +8,7 @@ The package is organised in modules, each one with a single responsibility:
 - ``scoring``    : score categories, weights and the overall score formula
 - ``collection`` : the ``GameCollection`` class that stores games in a CSV file
 - ``analysis``   : statistics computed on the collection (pandas, numpy, scipy)
-- ``plots``      : charts built with matplotlib and seaborn
+- ``plots``      : interactive charts built with Plotly
 """
 
 __version__ = "0.1.0"

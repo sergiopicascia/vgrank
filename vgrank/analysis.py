@@ -34,7 +34,7 @@ def scores_long_format(ranking):
     """
     Reshape the ranking from wide to long format: one row per (game, category).
 
-    This is the layout that seaborn expects for box plots and similar charts.
+    This is the layout that Plotly Express expects for box plots and similar charts.
 
     Parameters
     ----------

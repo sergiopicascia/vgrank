@@ -1,46 +1,41 @@
 """
-Charts for the ranking. Every function returns a matplotlib ``Figure`` so that
-the caller decides what to do with it (show it in Streamlit, save it to disk...).
+Interactive charts built with Plotly Express. Every function returns a Plotly
+``Figure``; the app shows it with ``st.plotly_chart``.
 """
 
-import matplotlib.pyplot as plt
-import seaborn as sns
+import plotly.express as px
 
 from vgrank.analysis import scores_long_format
 from vgrank.scoring import MAX_SCORE, MIN_SCORE
 
 # One colour is enough: every chart shows a single series.
-MAIN_COLOR = "#4C72B0"
+MAIN_COLOR = "#4F46E5"
+DEFAULT_HEIGHT = 380
 
 
-def ranking_bar_chart(ranking, top_n=10):
+def apply_style(fig, title, height=DEFAULT_HEIGHT):
     """
-    Horizontal bar chart of the best ``top_n`` games.
+    Give every chart the same look: white background, same font, same margins.
 
     Parameters
     ----------
-    ranking : pandas.DataFrame
-        Table returned by ``GameCollection.ranking()``.
-    top_n : int, optional
-        Number of games to show (default 10).
+    fig : plotly.graph_objects.Figure
+    title : str
+    height : int, optional
 
     Returns
     -------
-    matplotlib.figure.Figure
+    plotly.graph_objects.Figure
+        The same figure, restyled.
     """
-    top = ranking.head(top_n).iloc[::-1]  # reversed so that the best game is on top
-
-    fig, ax = plt.subplots(figsize=(8, 0.45 * len(top) + 1))
-    ax.barh(top["title"], top["overall"], color=MAIN_COLOR)
-
-    for position, value in enumerate(top["overall"]):
-        ax.text(value + 0.1, position, f"{value:.2f}", va="center", fontsize=9)
-
-    ax.set_xlim(0, MAX_SCORE + 1)
-    ax.set_xlabel("Overall score")
-    ax.set_title(f"Top {len(top)} games")
-    sns.despine(fig)
-    fig.tight_layout()
+    fig.update_layout(
+        title={"text": title, "x": 0, "font": {"size": 16}},
+        template="plotly_white",
+        font={"size": 13},
+        height=height,
+        margin={"l": 10, "r": 10, "t": 50, "b": 10},
+        showlegend=False,
+    )
     return fig
 
 
@@ -51,23 +46,25 @@ def category_boxplot(ranking):
     Parameters
     ----------
     ranking : pandas.DataFrame
+        Table returned by ``GameCollection.ranking()``.
 
     Returns
     -------
-    matplotlib.figure.Figure
+    plotly.graph_objects.Figure
     """
     long_table = scores_long_format(ranking)
 
-    fig, ax = plt.subplots(figsize=(8, 4))
-    sns.boxplot(data=long_table, x="category", y="score", color=MAIN_COLOR, ax=ax)
-
-    ax.set_ylim(MIN_SCORE - 0.5, MAX_SCORE + 0.5)
-    ax.set_xlabel("")
-    ax.set_ylabel("Score")
-    ax.set_title("How scores are distributed in each category")
-    sns.despine(fig)
-    fig.tight_layout()
-    return fig
+    fig = px.box(
+        long_table,
+        x="category",
+        y="score",
+        points="all",  # also draw one dot per game
+        hover_name="title",
+        color_discrete_sequence=[MAIN_COLOR],
+    )
+    fig.update_yaxes(range=[MIN_SCORE - 0.5, MAX_SCORE + 0.5], title="Score")
+    fig.update_xaxes(title="")
+    return apply_style(fig, "Scores given in each category")
 
 
 def correlation_heatmap(correlation):
@@ -81,105 +78,48 @@ def correlation_heatmap(correlation):
 
     Returns
     -------
-    matplotlib.figure.Figure
+    plotly.graph_objects.Figure
     """
-    fig, ax = plt.subplots(figsize=(7, 5))
-    sns.heatmap(
+    fig = px.imshow(
         correlation,
-        annot=True,
-        fmt=".2f",
-        cmap="RdBu",  # two colours with a neutral middle: good for values in [-1, 1]
-        vmin=-1,
-        vmax=1,
-        square=True,
-        ax=ax,
+        text_auto=".2f",
+        color_continuous_scale="RdBu",  # two colours with a neutral middle for [-1, 1]
+        zmin=-1,
+        zmax=1,
+        aspect="auto",
     )
-    ax.set_title("Correlation between categories")
-    fig.tight_layout()
-    return fig
+    fig.update_coloraxes(showscale=False)
+    return apply_style(fig, "Correlation between categories")
 
 
 def genre_bar_chart(genre_table):
     """
-    Bar chart of the average overall score per genre.
+    Horizontal bar chart of the average overall score per genre.
 
     Parameters
     ----------
     genre_table : pandas.DataFrame
-        Table returned by ``analysis.score_by_genre``.
+        Table returned by ``analysis.score_by_genre`` (genres are the index).
 
     Returns
     -------
-    matplotlib.figure.Figure
+    plotly.graph_objects.Figure
     """
-    fig, ax = plt.subplots(figsize=(8, 0.4 * len(genre_table) + 1))
-    ax.barh(genre_table.index, genre_table["mean_overall"], color=MAIN_COLOR)
+    table = genre_table.reset_index()
 
-    for position, (value, count) in enumerate(
-        zip(genre_table["mean_overall"], genre_table["n_games"])
-    ):
-        ax.text(value + 0.1, position, f"{value:.2f} ({count} games)", va="center", fontsize=9)
-
-    ax.invert_yaxis()  # best genre on top
-    ax.set_xlim(0, MAX_SCORE + 2)
-    ax.set_xlabel("Average overall score")
-    ax.set_title("Average score by genre")
-    sns.despine(fig)
-    fig.tight_layout()
-    return fig
-
-
-def metacritic_scatter(comparison_table):
-    """
-    Scatter plot of the user's overall score against the Metacritic score.
-
-    Parameters
-    ----------
-    comparison_table : pandas.DataFrame
-        Table returned by ``analysis.compare_with_metacritic``.
-
-    Returns
-    -------
-    matplotlib.figure.Figure
-    """
-    fig, ax = plt.subplots(figsize=(7, 6))
-
-    ax.scatter(
-        comparison_table["metacritic_10"],
-        comparison_table["overall"],
-        color=MAIN_COLOR,
-        s=60,
+    fig = px.bar(
+        table,
+        x="mean_overall",
+        y="genre",
+        orientation="h",
+        text="mean_overall",
+        hover_data={"n_games": True, "mean_overall": ":.2f", "genre": False},
+        color_discrete_sequence=[MAIN_COLOR],
     )
-    for _, row in comparison_table.iterrows():
-        ax.annotate(
-            row["title"],
-            (row["metacritic_10"], row["overall"]),
-            fontsize=8,
-            xytext=(5, 3),
-            textcoords="offset points",
-        )
-
-    # The diagonal is where the user and Metacritic agree perfectly.
-    ax.plot(
-        [MIN_SCORE, MAX_SCORE],
-        [MIN_SCORE, MAX_SCORE],
-        linestyle="--",
-        color="gray",
-        linewidth=1,
-        label="Perfect agreement",
-    )
-
-    # Zoom on the area where the points actually are (most scores are high).
-    lowest = min(comparison_table["metacritic_10"].min(), comparison_table["overall"].min())
-    ax.set_xlim(lowest - 0.5, MAX_SCORE + 0.5)
-    ax.set_ylim(lowest - 0.5, MAX_SCORE + 0.5)
-    ax.set_xlabel("Metacritic score (rescaled to 0-10)")
-    ax.set_ylabel("My overall score")
-    ax.set_title("My scores vs Metacritic")
-    ax.legend(loc="lower right")
-    sns.despine(fig)
-    fig.tight_layout()
-    return fig
+    fig.update_traces(texttemplate="%{text:.2f}", textposition="outside")
+    fig.update_xaxes(range=[0, MAX_SCORE + 1], title="Average overall score")
+    fig.update_yaxes(title="", autorange="reversed")  # best genre on top
+    return apply_style(fig, "Average score by genre")
 
 
 def games_per_year_chart(counts):
@@ -193,16 +133,56 @@ def games_per_year_chart(counts):
 
     Returns
     -------
-    matplotlib.figure.Figure
+    plotly.graph_objects.Figure
     """
-    fig, ax = plt.subplots(figsize=(8, 3.5))
-    ax.bar(counts.index.astype(str), counts.values, color=MAIN_COLOR)
+    table = counts.reset_index()
+    table.columns = ["year", "games"]
+    table["year"] = table["year"].astype(str)  # years are labels, not numbers
 
-    ax.set_xlabel("Release year")
-    ax.set_ylabel("Number of games")
-    ax.set_title("Rated games by release year")
-    ax.yaxis.get_major_locator().set_params(integer=True)
-    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
-    sns.despine(fig)
-    fig.tight_layout()
-    return fig
+    fig = px.bar(table, x="year", y="games", color_discrete_sequence=[MAIN_COLOR])
+    fig.update_xaxes(title="Release year")
+    fig.update_yaxes(title="Number of games", dtick=1)
+    return apply_style(fig, "Rated games by release year")
+
+
+def metacritic_scatter(comparison_table):
+    """
+    Scatter plot of the user's overall score against the Metacritic score.
+
+    Titles appear when hovering a point, so labels never overlap.
+
+    Parameters
+    ----------
+    comparison_table : pandas.DataFrame
+        Table returned by ``analysis.compare_with_metacritic``.
+
+    Returns
+    -------
+    plotly.graph_objects.Figure
+    """
+    fig = px.scatter(
+        comparison_table,
+        x="metacritic_10",
+        y="overall",
+        hover_name="title",
+        hover_data={"metacritic_10": ":.1f", "overall": ":.2f", "difference": ":+.2f"},
+        color_discrete_sequence=[MAIN_COLOR],
+    )
+    fig.update_traces(marker={"size": 12})
+
+    # Zoom on the area where the points actually are (most scores are high).
+    lowest = min(comparison_table["metacritic_10"].min(), comparison_table["overall"].min())
+    axis_range = [lowest - 0.5, MAX_SCORE + 0.5]
+
+    # The diagonal is where the user and Metacritic agree perfectly.
+    fig.add_shape(
+        type="line",
+        x0=axis_range[0],
+        y0=axis_range[0],
+        x1=axis_range[1],
+        y1=axis_range[1],
+        line={"dash": "dash", "color": "gray", "width": 1},
+    )
+    fig.update_xaxes(range=axis_range, title="Metacritic score (rescaled to 0-10)")
+    fig.update_yaxes(range=axis_range, title="My overall score")
+    return apply_style(fig, "My scores vs Metacritic", height=450)
