@@ -7,7 +7,7 @@ import os
 import pandas as pd
 
 from vgrank.models import GAME_COLUMNS, game_from_row
-from vgrank.scoring import add_overall_column, rank_games
+from vgrank.scoring import add_overall_column, rank_games, validate_scores
 
 # Path of the CSV file used when no other path is given.
 DEFAULT_CSV_PATH = os.path.join("data", "games.csv")
@@ -91,6 +91,31 @@ class GameCollection:
 
         self.games.append(game)
         self.save()
+
+    def update_scores(self, game_id, scores):
+        """
+        Replace the scores of a game and save the file.
+
+        Parameters
+        ----------
+        game_id : int
+        scores : dict
+            New mapping ``category -> score``.
+
+        Raises
+        ------
+        ValueError
+            If no game has that ``game_id`` or the scores are not valid.
+        """
+        validate_scores(scores)
+
+        for game in self.games:
+            if game.game_id == game_id:
+                game.scores = scores
+                self.save()
+                return
+
+        raise ValueError(f"No game with id {game_id} in the collection")
 
     def remove(self, game_id):
         """
