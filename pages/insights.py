@@ -7,9 +7,8 @@ import streamlit as st
 from vgrank import analysis, plots
 from vgrank.collection import GameCollection
 
-st.set_page_config(page_title="Insights - VideoGame Ranking", page_icon="🎮", layout="wide")
 
-st.title("📊 Insights")
+st.title("Insights")
 
 collection = GameCollection().load()
 ranking = collection.ranking()

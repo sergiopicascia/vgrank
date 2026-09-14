@@ -10,9 +10,8 @@ from vgrank.collection import GameCollection
 from vgrank.models import Game
 from vgrank.scoring import CATEGORIES, MAX_SCORE, MIN_SCORE, WEIGHTS, overall_score
 
-st.set_page_config(page_title="Add game - VideoGame Ranking", page_icon="🎮", layout="wide")
 
-st.title("➕ Add and rate a game")
+st.title("Add and rate a game")
 
 
 # --- Step 1: search ---------------------------------------------------------
