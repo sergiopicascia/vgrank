@@ -10,13 +10,7 @@ from vgrank.collection import GameCollection
 from vgrank.models import Game
 from vgrank.scoring import CATEGORIES, MAX_SCORE, MIN_SCORE, WEIGHTS, overall_score
 
-
-st.title("Add and rate a game")
-
-
-# --- Step 1: search ---------------------------------------------------------
-
-st.subheader("1. Search the game")
+st.title("Add a game")
 
 
 @st.cache_data(show_spinner="Searching on RAWG...")
@@ -25,10 +19,11 @@ def cached_search(query):
     return search_games(query)
 
 
-query = st.text_input("Game title", placeholder="e.g. Hollow Knight")
+# --- Search -----------------------------------------------------------------
+
+query = st.text_input("Search a game", placeholder="e.g. Hollow Knight")
 
 if query.strip() == "":
-    st.info("Type a title above to start.")
     st.stop()
 
 try:
@@ -47,44 +42,43 @@ for game in results:
     year = game["released"][:4] if game["released"] else "unknown year"
     labels.append(f"{game['title']} ({year})")
 
-chosen_label = st.selectbox("Pick the right game", labels)
+chosen_label = st.selectbox("Results", labels)
 chosen = results[labels.index(chosen_label)]
 
-col_image, col_info = st.columns([1, 2])
+
+# --- Game details and scores ------------------------------------------------
+
+col_image, col_form = st.columns([1, 2], gap="large")
+
 with col_image:
     if chosen["image_url"] != "":
         st.image(chosen["image_url"], width="stretch")
-with col_info:
-    st.markdown(f"### {chosen['title']}")
-    st.write("**Released:**", chosen["released"] or "unknown")
-    st.write("**Genres:**", ", ".join(chosen["genres"]) or "unknown")
-    st.write("**Platforms:**", ", ".join(chosen["platforms"]) or "unknown")
-    st.write("**Metacritic:**", chosen["metacritic"] if chosen["metacritic"] is not None else "n/a")
+    st.subheader(chosen["title"])
+    st.caption(
+        f"{chosen['released'] or 'unknown date'} · {', '.join(chosen['genres']) or 'unknown genre'}"
+    )
+    st.caption(", ".join(chosen["platforms"]) or "unknown platforms")
+    if chosen["metacritic"] is not None:
+        st.caption(f"Metacritic: {chosen['metacritic']}")
 
-
-# --- Step 2: rate -----------------------------------------------------------
-
-st.subheader("2. Rate it")
-
-scores = {}
-columns = st.columns(len(CATEGORIES))
-for column, category in zip(columns, CATEGORIES):
-    with column:
+with col_form:
+    scores = {}
+    for category in CATEGORIES:
         scores[category] = st.slider(
-            f"{category.capitalize()} (weight {WEIGHTS[category]:.0%})",
+            f"{category.capitalize()} · weight {WEIGHTS[category]:.0%}",
             MIN_SCORE,
             MAX_SCORE,
             value=7,
         )
 
-st.metric("Overall score", f"{overall_score(scores):.2f}")
+    col_metric, col_button = st.columns([1, 2], vertical_alignment="center")
+    col_metric.metric("Overall score", f"{overall_score(scores):.2f}")
+    add_clicked = col_button.button("Add to my ranking", type="primary", width="stretch")
 
 
-# --- Step 3: save -----------------------------------------------------------
+# --- Save -------------------------------------------------------------------
 
-st.subheader("3. Add to the ranking")
-
-if st.button("Add to my ranking", type="primary"):
+if add_clicked:
     new_game = Game(
         game_id=chosen["game_id"],
         title=chosen["title"],
