@@ -97,13 +97,3 @@ with tab_critics:
                 hide_index=True,
                 width="stretch",
             )
-
-
-# --- Export -----------------------------------------------------------------
-
-st.download_button(
-    "Download the ranking as CSV",
-    data=ranking.to_csv(index=False),
-    file_name="my_ranking.csv",
-    mime="text/csv",
-)

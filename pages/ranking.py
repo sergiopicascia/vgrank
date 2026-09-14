@@ -146,3 +146,14 @@ for column, (_, row) in zip(podium_columns, podium.iterrows()):
 
 for _, row in filtered.iloc[3:].iterrows():
     show_ranking_row(row)
+
+
+# --- Export -----------------------------------------------------------------
+
+st.divider()
+st.download_button(
+    "Download the ranking as CSV",
+    data=ranking.to_csv(index=False),
+    file_name="my_ranking.csv",
+    mime="text/csv",
+)
