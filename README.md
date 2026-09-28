@@ -52,6 +52,7 @@ so they are easy to change.
 | `scipy` | z-scores and Spearman correlation |
 | `plotly` | interactive charts |
 | `streamlit` | the web application |
+| `jupyterlab` | running the example notebook |
 
 Exact versions are listed in [`requirements.txt`](requirements.txt).
 
@@ -102,6 +103,21 @@ collection = GameCollection().load()
 print(collection.ranking()[["rank", "title", "overall"]])
 ```
 
+### The example notebook
+
+[`notebooks/vgrank_walkthrough.ipynb`](notebooks/vgrank_walkthrough.ipynb) uses the
+`vgrank` package step by step: it loads the ranking, searches and adds a game, edits
+and removes games, computes statistics, draws the charts and exports the ranking as
+CSV. Start Jupyter from the project folder and open it:
+
+```bash
+jupyter lab
+```
+
+The notebook works on a copy of `data/games.csv` (saved as `notebooks/games_copy.csv`),
+so running it never changes your real ranking. Without an API key the search is
+skipped and the game to add is written by hand.
+
 ## Project structure
 
 ```
@@ -121,6 +137,8 @@ vgrank/
 │   └── plots.py            # interactive charts with plotly
 ├── data/
 │   └── games.csv           # the rated games
+├── notebooks/
+│   └── vgrank_walkthrough.ipynb  # the app, step by step, in a notebook
 ├── .streamlit/config.toml  # colours and font of the app
 ├── .env.example            # template for the API key
 ├── .gitignore
@@ -128,6 +146,6 @@ vgrank/
 └── README.md
 ```
 
-Everything in `vgrank/` is plain Python that could be
-reused in a notebook or a script, while `app.py` and `pages/` only deal with
+Everything in `vgrank/` is plain Python that can be
+reused in a notebook (see `notebooks/`) or a script, while `app.py` and `pages/` only deal with
 showing things on screen.
